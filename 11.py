@@ -14,9 +14,9 @@ import torch.optim as optim
 import torch
 # 加载原始数据
 df_train = pd.read_csv(
-    './HeartBeatClassification/dataset/train.csv')
+    './dataset/train.csv')
 df_testA = pd.read_csv(
-    './HeartBeatClassification/dataset/testA.csv')
+    './dataset/testA.csv')
 # 查看训练和测试数据的前五条
 print(df_train.head())
 print('\n')
@@ -37,7 +37,7 @@ for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
     sns.lineplot(data=signals)
 
 plt.legend(ids)
-# plt.show()
+plt.show()
 
 # 加载原始数据
 
@@ -57,7 +57,7 @@ class MyData(Data.Dataset):
 def load_data(batch_size):
     # 加载原始数据
     df_train = pd.read_csv(
-        'C:/Users/lwang/OneDrive/AIstudy/HeartBeatClassification/dataset/train.csv')
+        './dataset/train.csv')
     # 拆解heartbeat_signals
     train_signals = np.array(df_train['heartbeat_signals'].apply(
         lambda x: np.array(list(map(float, x.split(','))), dtype=np.float32)))
