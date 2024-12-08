@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.utils.data as Data
 import torch.optim as optim
 import torch
+import time
 # 加载原始数据
 df_train = pd.read_csv(
     './dataset/train.csv')
@@ -153,12 +154,16 @@ optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # 循环20个epoch进行数据训练
 list_loss, list_acc = [], []
+t0 = time.time()
 for epoch in range(20):
+    start_time = time.time()
     running_loss, running_acc = train_model(model, train_loader)
     list_loss.append(running_loss/train_data.__len__())
     list_acc.append(running_acc/train_data.__len__())
-    print('Train {} epoch, Loss: {:.6f}, Acc:{:.6f}'.format(
-        epoch+1, running_loss/train_data.__len__(), running_acc/train_data.__len__()))
-
+    end_time = time.time()
+    print('Train {} epoch, Loss: {:.6f}, Acc:{:.6f}, Duration:{:.2f}s'.format(
+        epoch+1, running_loss/train_data.__len__(), running_acc/train_data.__len__(), end_time - start_time))
+tend = time.time()
+print('Total duration of training:{:.2f}s'.format(tend - t0))
 # 绘图查看loss 和 accuracy曲线
 loss_curve(list_loss, list_acc)
