@@ -9,7 +9,7 @@ Use `Powershell` or `Cmd` input
 `pip install -r "requirement.txt`
 ### Usage
 cd to root directory
-`python 11.py`
+`python train.py`
 
 ## 不同计算平台下的耗时对比
 
