@@ -128,4 +128,25 @@ Rich high-speed interfaces (PCIe, TYPE-C，SATA, Gigabit ethernet)
 每个epoch平均390s，未记录总耗时。
 注：cpu始终工作在70%左右，未达到100%
 ```
-
+### <6> NVIDIA GeForce RTX 4070 Laptop GPU
+#### 【参数】：
+```
+NVIDIA GeForce RTX 4070 Laptop GPU的具体参数如下：
+- **核心参数**：采用AD106核心，版本号GN21-x6，拥有3组GPC.
+- **CUDA核心数量**：4608个.
+- **纹理单元**：144个.
+- **ROP数量**：48个.
+- **Tensor Core数量**：144个第四代Tensor Core.
+- **RT Core数量**：36个第三代RT Core.
+- **显存规格**：搭配8GB 128bit GDDR6显存，显存带宽256GB/s.
+- **核心频率**：基础频率1230MHz，Boost频率最高可达2175MHz，在不同的笔记本产品中，其实际运行的最高频率可能会有所不同，如微星魔影15中的RTX 4070 Laptop GPU最高频率达到1695MHz，而ROG幻16经典版中的则可达到2340MHz.
+- **功耗**：功耗一般为35W-115W，TGP功耗墙为120w，部分笔记本产品可将其解锁到140w.
+- **芯片面积**：190mm².
+- **工艺**：采用台积电4N定制工艺.
+- **功能特性**：完整继承了RTX 40系列GPU的所有特性，支持DirectX 12 Ultimate、更高效的光线追踪、可变速率着色，并且支持DLSS 3技术.
+```
+#### 【计算耗时】：
+```
+每个epoch平均5s多，总耗时10个epoch为52.39s，非常快！比纯CPU的快多了~
+```
+![alt text](5e024fa8ea48735523619e7351d40de.png)

@@ -13,17 +13,17 @@ import torch.utils.data as Data
 import torch.optim as optim
 import torch
 import time
-# 加载原始数据
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# 加载训练数据
 df_train = pd.read_csv(
     './dataset/train.csv')
-df_testA = pd.read_csv(
-    './dataset/testA.csv')
-# 查看训练和测试数据的前五条
+
+# 查看训练数据的前五条
 print(df_train.head())
 print('\n')
-print(df_testA.head())
 # 检查数据是否有NAN数据
-print(df_train.isna().sum(), df_testA.isna().sum())
+print(df_train.isna().sum())
 # 确认标签的类别及数量
 print(df_train['label'].value_counts())
 # 查看训练数据集特征
@@ -40,9 +40,13 @@ for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
 plt.legend(ids)
 plt.show()
 
+if torch.cuda.is_available():
+    print("CUDA is available")
+else:
+    print("CUDA is not available")
+
+
 # 加载原始数据
-
-
 class MyData(Data.Dataset):
     def __init__(self, feature, label):
         self.feature = feature  # 特征
@@ -106,19 +110,22 @@ class model_CNN_1(nn.Module):
         )
 
     def forward(self, inputs):
-        inputs = inputs.view(inputs.size()[0], 1, inputs.size()[1])
+        inputs = inputs.view(inputs.size()[0], 1, inputs.size()[1]).to(device)
         inputs = self.conv_unit(inputs)
-        inputs = inputs.view(inputs.size()[0], -1)
+        inputs = inputs.view(inputs.size()[0], -1).to(device)
         inputs = self.dense_unit(inputs)
         return inputs
 
 
 def train_model(model, train_loader):
     model.train()
+    model = model.to(device)
     running_loss = 0.0
     running_acc = 0.0
     for i, data in enumerate(train_loader):
         inputs, labels = data
+        inputs = inputs.to(device)
+        labels = labels.to(device)
         predictions = model(inputs)
         loss = criterion(predictions, labels.long())
         optimizer.zero_grad()
@@ -141,6 +148,7 @@ def loss_curve(list_loss, list_acc):
     ax.set_ylabel('%')
     ax.set_title('loss & accuray ')
     ax.legend()
+    
 
 
 # 调用定义的加载函数进行数据加载
@@ -149,14 +157,19 @@ train_data, train_loader = load_data(batch_size)
 
 # 定义模型、loss function
 model = model_CNN_1()
+model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # 循环20个epoch进行数据训练
 list_loss, list_acc = [], []
 t0 = time.time()
-for epoch in range(20):
+for epoch in range(10):
     start_time = time.time()
+    # 将训练数据和标签移动到GPU设备上（在train_model函数内部也要确保相应处理）
+    for data, labels in train_loader:
+        data = data.to(device)
+        labels = labels.to(device)
     running_loss, running_acc = train_model(model, train_loader)
     list_loss.append(running_loss/train_data.__len__())
     list_acc.append(running_acc/train_data.__len__())
@@ -167,3 +180,6 @@ tend = time.time()
 print('Total duration of training:{:.2f}s'.format(tend - t0))
 # 绘图查看loss 和 accuracy曲线
 loss_curve(list_loss, list_acc)
+plt.show()
+# 保存训练模型
+torch.save(model.state_dict(),'HeartBeatClassification.pth')
