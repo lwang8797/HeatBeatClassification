@@ -162,10 +162,6 @@ list_loss, list_acc = [], []
 tstart = time.time()
 for epoch in range(10):
     start_time = time.time()
-    # 将训练数据和标签移动到GPU设备上（在train_model函数内部也要确保相应处理）
-    # for data, labels in train_loader:
-        # data = data.to(device)
-        # labels = labels.to(device)
     running_loss, running_acc = train_model(model, train_loader)
     list_loss.append(running_loss/train_data.__len__())
     list_acc.append(running_acc/train_data.__len__())
