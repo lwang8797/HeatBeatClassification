@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from model_definition import model_CNN_1
 import torch.nn as nn
 import torch.utils.data as Data
 import torch.optim as optim
@@ -44,7 +45,6 @@ for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
 plt.legend(ids)
 plt.show()
 
-
 # 加载原始数据
 class MyData(Data.Dataset):
     def __init__(self, feature, label):
@@ -73,48 +73,6 @@ def load_data(batch_size):
     train_loader = Data.DataLoader(
         dataset=train_data, batch_size=batch_size, shuffle=True)
     return train_data, train_loader
-
-
-class model_CNN_1(nn.Module):
-    def __init__(self):
-        super(model_CNN_1, self).__init__()
-        self.conv_unit = nn.Sequential(
-            nn.BatchNorm1d(1),
-            nn.Conv1d(in_channels=1, out_channels=32,
-                      kernel_size=11, stride=1, padding=5),
-            nn.LeakyReLU(),
-            nn.BatchNorm1d(32),
-            nn.Conv1d(in_channels=32, out_channels=64,
-                      kernel_size=11, stride=1, padding=5),
-            nn.LeakyReLU(),
-            nn.BatchNorm1d(64),
-            nn.MaxPool1d(4),
-            nn.Conv1d(in_channels=64, out_channels=128,
-                      kernel_size=3, stride=1, padding=1),
-            nn.LeakyReLU(),
-            nn.BatchNorm1d(128),
-            nn.Conv1d(in_channels=128, out_channels=256,
-                      kernel_size=3, stride=1, padding=1),
-            nn.LeakyReLU(),
-            nn.MaxPool1d(4),
-            nn.Dropout(0.1),
-        )
-        self.dense_unit = nn.Sequential(
-            nn.Linear(3072, 1024),
-            nn.LeakyReLU(),
-            nn.Linear(1024, 128),
-            nn.LeakyReLU(),
-            nn.Linear(128, 4),
-            nn.Softmax(dim=1)
-        )
-
-    def forward(self, inputs):
-        inputs = inputs.view(inputs.size()[0], 1, inputs.size()[1])
-        inputs = self.conv_unit(inputs)
-        inputs = inputs.view(inputs.size()[0], -1)
-        inputs = self.dense_unit(inputs)
-        return inputs
-
 
 def train_model(model, train_loader):
     model.train()
@@ -174,4 +132,4 @@ print('Total duration of training:{:.2f}s'.format(tend - tstart))
 loss_curve(list_loss, list_acc)
 plt.show()
 # 保存训练模型
-torch.save(model.state_dict(), 'HeartBeatClassification.pth')
+# torch.save(model, 'HeartBeatClassification.pth')

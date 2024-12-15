@@ -9,13 +9,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from model_definition import model_CNN_1
 import torch.nn as nn
 import torch.utils.data as Data
 import torch.optim as optim
 import torch
 import time
-from train import model_CNN_1
-# from train import MyData
+# from train import model_CNN_1
+# 检查cuda是否可用
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.cuda.is_available():
+    print("CUDA is available")
+else:
+    print("CUDA is not available")
 # 加载测试数据
 df_testA = pd.read_csv(
     './dataset/testA.csv')
@@ -40,9 +46,8 @@ print(df_testA.info())
 #     test_loader = Data.DataLoader(
 #         dataset=test_data, batch_size=batch_size, shuffle=True)
 #     return test_data, test_loader
-model = model_CNN_1();
-model_path = "./HeartBeatClassification.pth"  # 将这里替换为你实际的.pth文件路径
-state_dict = torch.load(model_path)
-model.load_state_dict(state_dict)
-
+model_path = "./HeartBeatClassification.pth"  
+model = model_CNN_1()
+model = torch.load(model_path, weights_only=False)
 model.eval()
+
