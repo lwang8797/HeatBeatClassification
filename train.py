@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from model_definition import model_CNN_1
+from model_definition import model_CNN_1,HeartBeatsDataSet
 import torch.nn as nn
 import torch.utils.data as Data
 import torch.optim as optim
@@ -45,19 +45,6 @@ for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
 plt.legend(ids)
 plt.show()
 
-# 加载原始数据
-class MyData(Data.Dataset):
-    def __init__(self, feature, label):
-        self.feature = feature  # 特征
-        self.label = label  # 标签
-
-    def __len__(self):
-        return len(self.feature)
-
-    def __getitem__(self, idx):
-        return self.feature[idx], self.label[idx]
-
-
 def load_data(batch_size):
     # 加载原始数据
     df_train = pd.read_csv(
@@ -68,11 +55,12 @@ def load_data(batch_size):
     train_labels = np.array(df_train['label'].apply(
         lambda x: float(x)), dtype=np.float32)
     # 构建pytorch数据类
-    train_data = MyData(train_signals, train_labels)
+    train_data = HeartBeatsDataSet(train_signals, train_labels)
     # 构建pytorch数据集Dataloader
     train_loader = Data.DataLoader(
         dataset=train_data, batch_size=batch_size, shuffle=True)
     return train_data, train_loader
+
 
 def train_model(model, train_loader):
     model.train()
@@ -132,4 +120,4 @@ print('Total duration of training:{:.2f}s'.format(tend - tstart))
 loss_curve(list_loss, list_acc)
 plt.show()
 # 保存训练模型
-# torch.save(model, 'HeartBeatClassification.pth')
+torch.save(model, 'HeartBeatClassification.pth')

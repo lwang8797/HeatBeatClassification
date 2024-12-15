@@ -5,6 +5,7 @@ Created on Sun Dec 15 10:44:49 2024
 @author: lwang
 """
 import torch.nn as nn
+from torch.utils.data import Dataset
 
 
 class model_CNN_1(nn.Module):
@@ -46,3 +47,15 @@ class model_CNN_1(nn.Module):
         inputs = inputs.view(inputs.size()[0], -1)
         inputs = self.dense_unit(inputs)
         return inputs
+
+
+class HeartBeatsDataSet(Dataset):
+    def __init__(self, feature, label):
+        self.feature = feature  # 特征
+        self.label = label  # 标签
+
+    def __len__(self):
+        return len(self.feature)
+
+    def __getitem__(self, idx):
+        return self.feature[idx], self.label[idx]
