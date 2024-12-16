@@ -31,22 +31,12 @@ print(df_testA.isna().sum())
 # 查看测试数据集信息
 print(df_testA.info())
 
-
-# ids = []
-# for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
-#     ids.append(int(id))
-#     signals = list(map(float, row['heartbeat_signals'].split(',')))
-#     sns.lineplot(data=signals)
-
-# plt.legend(ids)
-# plt.show()
-
 # 导入数据并构建数据集
 test_signals = np.array(df_testA['heartbeat_signals'].apply(
     lambda x: np.array(list(map(float, x.split(','))), dtype=np.float32)))
 test_labels = np.zeros(len(test_signals))
 test_data = HeartBeatsDataSet(test_signals, test_labels)
-test_dataloader = DataLoader(test_data, batch_size=8)
+test_dataloader = DataLoader(test_data, batch_size=32)
 
 # 绘制测试数据集的前五条的折线图
 for i in range(5):
@@ -54,14 +44,14 @@ for i in range(5):
 plt.show()
 # 加载已训练好的模型
 model_path = "./HeartBeatClassification.pth"
-model = model_CNN_1().to(device)
-model = torch.load(model_path, weights_only=False)
+model = model_CNN_1()
+model = torch.load(model_path, weights_only=False, map_location=device)
 model.eval()
 tstart = time.time()
 for index, data in enumerate(test_dataloader):
     inputs, labels = data
     inputs = inputs.to(device)
     labels = labels.to(device)
-    _,predictions = torch.max(model(inputs),1)
+    _, predictions = torch.max(model(inputs), 1)
 tend = time.time()
-print('evaluate duration:{:.2f}s'.format(tend - tstart))
+print('Evaluate Duration:{:.2f}s'.format(tend - tstart))

@@ -37,7 +37,7 @@ print(df_train.describe())
 print(df_train.info())
 # 绘制每种类别的折线图
 ids = []
-for id, row in df_train.groupby('label').apply(lambda x: x.iloc[2]).iterrows():
+for id, row in df_train.groupby('label', include_groups=True).apply(lambda x: x.iloc[2]).iterrows():
     ids.append(int(id))
     signals = list(map(float, row['heartbeat_signals'].split(',')))
     sns.lineplot(data=signals)
@@ -106,6 +106,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.0001)
 # 循环20个epoch进行数据训练
 list_loss, list_acc = [], []
 tstart = time.time()
+print('Start training ...')
 for epoch in range(10):
     start_time = time.time()
     running_loss, running_acc = train_model(model, train_loader)
